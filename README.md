@@ -1,2 +1,4 @@
-# TensorFlowReact
-A project to help me learn how to work with Tensorflow in React
+# React / Vite Project following this tutorial: 
+https://kinsta.com/blog/react-object-detection-app/
+
+Enhanced code with typesafety and error handling, then deployed.
