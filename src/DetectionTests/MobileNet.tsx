@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '@tensorflow/tfjs';
 import * as mobileNet from '@tensorflow-models/mobilenet';
+import { CameraDirection, OUTWARD_CAMERA_DIRECTION, INWARD_CAMERA_DIRECTION } from '../cameraConstants';
+import { FaCamera, FaPlay, FaStop } from 'react-icons/fa';
 
 type Prediction = {
     className: string;
@@ -15,6 +17,7 @@ const MobileNet: React.FC = () => {
   const [shouldResetIntervalId, setShouldResetIntervalId] = useState<boolean>(false);
   const [shouldDisableButton, setShouldDisableButton] = useState<boolean>(false);
   const [mlModel, setMLModel] = useState<mobileNet.MobileNet>();
+  const [currentCameraDirection, setCurrentCameraDirection] = useState<CameraDirection>(OUTWARD_CAMERA_DIRECTION);
 
   useEffect(() => {
     // Load the model when the component mounts
@@ -84,6 +87,16 @@ const MobileNet: React.FC = () => {
     return () => clearTimeout(timeout);
   }, [shouldDisableButton]);
 
+  const switchCameraDirection = async () => {
+    const newCameraDirection = (currentCameraDirection === OUTWARD_CAMERA_DIRECTION) ? INWARD_CAMERA_DIRECTION : OUTWARD_CAMERA_DIRECTION;
+    setCurrentCameraDirection(newCameraDirection);
+
+    if(isWebcamStarted) {
+      await stopWebcam();
+      await startWebcam();
+    }
+  }
+
   const startWebcam = async () => {
     setShouldResetIntervalId(false);
     try {
@@ -123,8 +136,12 @@ const MobileNet: React.FC = () => {
   <>
     <div className="buttons">
       <button onClick={isWebcamStarted ? stopWebcam : startWebcam} disabled={shouldDisableButton}>
+        {(!isWebcamStarted) ? <FaPlay/> : <FaStop/>}
         {isWebcamStarted ? 'Stop' : 'Start'} Webcam
       </button>
+      <button className="switch-camera-button" onClick={switchCameraDirection}>
+        <FaCamera /> {(currentCameraDirection === INWARD_CAMERA_DIRECTION) ? 'Inward Facing' : 'Outward Facing'}
+      </button>    
     </div>
     <div className="feed">
       {isWebcamStarted ? <video ref={videoRef} autoPlay muted /> : <div />}

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as cocoSsd from '@tensorflow-models/coco-ssd';
 import '@tensorflow/tfjs';
+import { CameraDirection, INWARD_CAMERA_DIRECTION, OUTWARD_CAMERA_DIRECTION } from '../cameraConstants';
+import { FaCamera, FaPlay, FaStop } from 'react-icons/fa';
 
 type Prediction = {
     bbox: [number, number, number, number];
@@ -17,6 +19,7 @@ const CocoSsd: React.FC = () => {
   const [shouldDisableButton, setShouldDisableButton] = useState<boolean>(false);
   const [mlModel, setMLModel] = useState<cocoSsd.ObjectDetection>();
   const [videoDimensions, setVideoDimensions] = useState({ width: 0, height: 0 });
+  const [currentCameraDirection, setCurrentCameraDirection] = useState<CameraDirection>(OUTWARD_CAMERA_DIRECTION);
 
   useEffect(() => {
     // Load the model when the component mounts
@@ -78,12 +81,23 @@ const CocoSsd: React.FC = () => {
     return () => clearTimeout(timeout);
   }, [shouldDisableButton]);
 
+  const switchCameraDirection = async () => {
+    const newCameraDirection = (currentCameraDirection === OUTWARD_CAMERA_DIRECTION) ? INWARD_CAMERA_DIRECTION : OUTWARD_CAMERA_DIRECTION;
+    setCurrentCameraDirection(newCameraDirection);
+
+    if(isWebcamStarted) {
+      await stopWebcam();
+      await startWebcam();
+    }
+  }
+
   const startWebcam = async () => {
     setShouldResetIntervalId(false);
     try {
       setShouldDisableButton(true);
       setIsWebcamStarted(true);
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentCameraDirection } });
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -114,8 +128,12 @@ const CocoSsd: React.FC = () => {
   <>
     <div className="buttons">
       <button onClick={isWebcamStarted ? stopWebcam : startWebcam} disabled={shouldDisableButton}>
+        {(!isWebcamStarted) ? <FaPlay/> : <FaStop/>}
         {isWebcamStarted ? 'Stop' : 'Start'} Webcam
       </button>
+      <button className="switch-camera-button" onClick={switchCameraDirection}>
+        <FaCamera /> Swap Camera Direction
+      </button>    
     </div>
     <div className="feed">
       {isWebcamStarted ? <video ref={videoRef} autoPlay muted /> : <div />}
