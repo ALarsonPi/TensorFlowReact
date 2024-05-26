@@ -23,7 +23,7 @@ const MobileNet: React.FC = () => {
     // Load the model when the component mounts
     const loadModel = async () => {
       try {
-        const modalConfig: mobileNet.ModelConfig = {version: 2, alpha: 1}
+        const modalConfig: mobileNet.ModelConfig = {version: 1, alpha: 1}
         const loadedModel = await mobileNet.load(modalConfig);
         setMLModel(loadedModel);
       } catch (err) {

@@ -132,7 +132,7 @@ const CocoSsd: React.FC = () => {
         {isWebcamStarted ? 'Stop' : 'Start'} Webcam
       </button>
       <button className="switch-camera-button" onClick={switchCameraDirection}>
-        <FaCamera /> Swap Camera Direction
+        <FaCamera /> {(currentCameraDirection === INWARD_CAMERA_DIRECTION) ? 'Inward Facing' : 'Outward Facing'}
       </button>    
     </div>
     <div className="feed">
