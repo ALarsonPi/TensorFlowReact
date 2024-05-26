@@ -151,3 +151,59 @@ button:focus-visible {
   }
 
 }
+
+/* Mobile styles */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.5em;
+  }
+
+  .react-tabs__tab {
+    padding: 4px 8px;
+    font-size: 0.9em;
+  }
+
+  .buttons {
+    flex-direction: column;
+    align-items: stretch;
+    button {
+      margin: 4px 0;
+      padding: 0.4em 1em;
+      font-size: 0.9em;
+    }
+  }
+
+  .feed {
+    video {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    p {
+      font-size: 10px;
+      padding: 3px;
+    }
+  }
+
+  .object-detection-page {
+    padding: 8px;
+  }
+
+  .app {
+    padding: 8px;
+  }
+  
+  .predictions {
+    width: 100%;
+    padding: 8px;
+    ul {
+      padding-left: 20px;
+      margin: 0;
+      list-style: none;
+      li {
+        font-size: 0.9em;
+        padding: 4px 0;
+      }
+    }
+  }
+}

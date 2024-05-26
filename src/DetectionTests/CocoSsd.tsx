@@ -16,6 +16,7 @@ const CocoSsd: React.FC = () => {
   const [shouldResetIntervalId, setShouldResetIntervalId] = useState<boolean>(false);
   const [shouldDisableButton, setShouldDisableButton] = useState<boolean>(false);
   const [mlModel, setMLModel] = useState<cocoSsd.ObjectDetection>();
+  const [videoDimensions, setVideoDimensions] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
     // Load the model when the component mounts
@@ -39,6 +40,10 @@ const CocoSsd: React.FC = () => {
     const predictObject = async () => {
         if (mlModel && videoRef.current && videoRef.current.srcObject && videoRef.current.readyState >= 2) { 
             try {
+              setVideoDimensions({
+                width: videoRef.current.videoWidth,
+                height: videoRef.current.videoHeight,
+              });
               const maxBoxes = 3;
               const minScoreAccuracy = 0.6;
               const predictions = await mlModel.detect(videoRef.current, maxBoxes, minScoreAccuracy);
@@ -78,7 +83,7 @@ const CocoSsd: React.FC = () => {
     try {
       setShouldDisableButton(true);
       setIsWebcamStarted(true);
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -96,14 +101,11 @@ const CocoSsd: React.FC = () => {
     if (video && video.srcObject instanceof MediaStream) {
       const stream = video.srcObject as MediaStream;
       const tracks = stream.getTracks();
-
       tracks.forEach((track) => {
         track.stop();
       });
-
       video.srcObject = null;
       setIsWebcamStarted(false);
-
       setPredictions([]);
     }
   };
@@ -120,22 +122,27 @@ const CocoSsd: React.FC = () => {
       {predictions.length > 0 && (
         predictions.map((prediction, index) => (
           <React.Fragment key={index}>
-            <p style={{
-              position: 'absolute',
-              left: `${prediction.bbox[0]}px`, 
-              top: `${prediction.bbox[1]}px`,
-              width: `${prediction.bbox[2] - 100}px`
-            }}>
+            <p
+              style={{
+                position: 'absolute',
+                left: `${(prediction.bbox[0] / videoDimensions.width) * 100}%`,
+                top: `${(prediction.bbox[1] / videoDimensions.height) * 100}%`,
+                width: `${((prediction.bbox[2] - 100) / videoDimensions.width) * 100}%`,
+              }}
+            >
               {prediction.class} - with {Math.round(prediction.score * 100)}% confidence.
             </p>
-            <div className="marker" style={{
-              position: 'absolute',
-              left: `${prediction.bbox[0]}px`,
-              top: `${prediction.bbox[1]}px`,
-              width: `${prediction.bbox[2]}px`,
-              height: `${prediction.bbox[3]}px`,
-              border: '2px solid red'
-            }} />
+            <div
+              className="marker"
+              style={{
+                position: 'absolute',
+                left: `${(prediction.bbox[0] / videoDimensions.width) * 100}%`,
+                top: `${(prediction.bbox[1] / videoDimensions.height) * 100}%`,
+                width: `${(prediction.bbox[2] / videoDimensions.width) * 100}%`,
+                height: `${(prediction.bbox[3] / videoDimensions.height) * 100}%`,
+                border: '2px solid red',
+              }}
+            />
           </React.Fragment>
         ))
       )}

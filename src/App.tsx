@@ -11,22 +11,13 @@ function App() {
           <TabList>
             <Tab>Tensorflow Coco SSD</Tab>
             <Tab>Tensorflow MobileNet</Tab>
-            {/* <Tab>Tab Three</Tab>
-            <Tab>Tab Four</Tab> */}
           </TabList>
-
           <TabPanel>
             <CocoSsd />
           </TabPanel>
           <TabPanel>
             <MobileNet />
           </TabPanel>
-          {/* <TabPanel>
-            <ObjectDetection />
-          </TabPanel>
-          <TabPanel>
-          <ObjectDetection />
-          </TabPanel> */}
         </Tabs>
       </div>
     </div>
