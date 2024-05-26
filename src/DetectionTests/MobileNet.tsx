@@ -102,8 +102,7 @@ const MobileNet: React.FC = () => {
     try {
       setShouldDisableButton(true);
       setIsWebcamStarted(true);
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentCameraDirection } });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
