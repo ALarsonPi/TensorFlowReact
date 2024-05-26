@@ -73,6 +73,30 @@ button:focus-visible {
   }
 }
 
+.react-tabs__tab-list {
+  border-bottom: 1px solid #ccc;
+  margin: 0;
+  padding: 0;
+}
+
+.react-tabs__tab {
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  bottom: -1px;
+  position: relative;
+  list-style: none;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.react-tabs__tab--selected {
+  background: white;
+  border-color: #ccc;
+  color: black;
+}
+
+
 .app {
   width: 100%;
   display: flex;
@@ -81,7 +105,7 @@ button:focus-visible {
   flex-direction: column;
 }
 
-.object-detection {
+.object-detection-page {
   width: 100%;
   display: flex;
   flex-direction: column;

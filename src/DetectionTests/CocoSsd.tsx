@@ -8,7 +8,7 @@ type Prediction = {
     score: number;
 };
 
-const ObjectDetection: React.FC = () => {
+const CocoSsd: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isWebcamStarted, setIsWebcamStarted] = useState<boolean>(false);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
@@ -109,51 +109,51 @@ const ObjectDetection: React.FC = () => {
   };
 
   return (
-    <div className="object-detection">
-      <div className="buttons">
-        <button onClick={isWebcamStarted ? stopWebcam : startWebcam} disabled={shouldDisableButton}>
-          {isWebcamStarted ? 'Stop' : 'Start'} Webcam
-        </button>
-      </div>
-      <div className="feed">
-        {isWebcamStarted ? <video ref={videoRef} autoPlay muted /> : <div />}
-        {predictions.length > 0 && (
-          predictions.map((prediction, index) => (
-            <React.Fragment key={index}>
-              <p style={{
-                position: 'absolute',
-                left: `${prediction.bbox[0]}px`, 
-                top: `${prediction.bbox[1]}px`,
-                width: `${prediction.bbox[2] - 100}px`
-              }}>
-                {prediction.class} - with {Math.round(prediction.score * 100)}% confidence.
-              </p>
-              <div className="marker" style={{
-                position: 'absolute',
-                left: `${prediction.bbox[0]}px`,
-                top: `${prediction.bbox[1]}px`,
-                width: `${prediction.bbox[2]}px`,
-                height: `${prediction.bbox[3]}px`,
-                border: '2px solid red'
-              }} />
-            </React.Fragment>
-          ))
-        )}
-      </div>
+  <>
+    <div className="buttons">
+      <button onClick={isWebcamStarted ? stopWebcam : startWebcam} disabled={shouldDisableButton}>
+        {isWebcamStarted ? 'Stop' : 'Start'} Webcam
+      </button>
+    </div>
+    <div className="feed">
+      {isWebcamStarted ? <video ref={videoRef} autoPlay muted /> : <div />}
       {predictions.length > 0 && (
-        <div>
-          <h3>Predictions:</h3>
-          <ul>
-            {predictions.map((prediction, index) => (
-              <li key={index}>
-                {`${prediction.class} (${(prediction.score * 100).toFixed(2)}%)`}
-              </li>
-            ))}
-          </ul>
-        </div>
+        predictions.map((prediction, index) => (
+          <React.Fragment key={index}>
+            <p style={{
+              position: 'absolute',
+              left: `${prediction.bbox[0]}px`, 
+              top: `${prediction.bbox[1]}px`,
+              width: `${prediction.bbox[2] - 100}px`
+            }}>
+              {prediction.class} - with {Math.round(prediction.score * 100)}% confidence.
+            </p>
+            <div className="marker" style={{
+              position: 'absolute',
+              left: `${prediction.bbox[0]}px`,
+              top: `${prediction.bbox[1]}px`,
+              width: `${prediction.bbox[2]}px`,
+              height: `${prediction.bbox[3]}px`,
+              border: '2px solid red'
+            }} />
+          </React.Fragment>
+        ))
       )}
     </div>
+    {predictions.length > 0 && (
+      <div>
+        <h3>Predictions:</h3>
+        <ul>
+          {predictions.map((prediction, index) => (
+            <li key={index}>
+              {`${prediction.class} (${(prediction.score * 100).toFixed(2)}%)`}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </>
   );
 };
 
-export default ObjectDetection;
+export default CocoSsd;
